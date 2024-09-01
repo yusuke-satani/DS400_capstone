@@ -1,0 +1,57 @@
+#twitter-template-extension {
+    width: 150px;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #e6f3ff; /* 薄い水色 */
+    position: fixed;
+    top: 0;
+    right: 0;
+    font-size: 13px;
+    overflow-y: auto;
+    z-index: 9999;
+  }
+  
+  #pasteArea, #generateBtn, .resultArea {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  #pasteArea {
+    height: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  #generateBtn {
+    padding: 5px;
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  #generateBtn:hover {
+    background-color: #0c85d0;
+  }
+  
+  .resultArea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+  }
+  
+  .resultArea h4 {
+    margin: 0 0 5px 0;
+  }
+  
+  .resultArea pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    max-height: 100px;
+    overflow-y: auto;
+  }

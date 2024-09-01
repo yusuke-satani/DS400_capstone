@@ -1,0 +1,22 @@
+{
+    "name": "RydeeNLP",
+    "description": "This generates Japanese sentences with easier vocabulary and clicked words are sent to AnkiAPI",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "permissions": ["activeTab"],
+    "host_permissions": ["http://localhost:5000/analyze"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "css": ["styles.css"],
+        "js": ["main.js"],
+        "run_at": "document_end"
+      }
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'; connect-src http://localhost:5000/"
+    }
+  }
