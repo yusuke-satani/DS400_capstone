@@ -3,7 +3,7 @@ import MeCab
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/analyze": {"origins": "chrome-extension://lloglaichoccnkefmcefhpilfggllagc"}})
+CORS(app)
 
 @app.route('/analyze', methods=['POST'])
 def analyze():

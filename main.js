@@ -44,7 +44,7 @@ pasteArea.addEventListener('paste', (event) => {
   pasteArea.value = text;
 });
 
-// Generate機能の実装
+
 const generateBtn = document.querySelector('#generateBtn');
 const originalArea = document.querySelector('#originalArea pre');
 const generatedArea = document.querySelector('#generatedArea pre');
@@ -53,14 +53,26 @@ generateBtn.addEventListener('click', () => {
   const text = pasteArea.value;
   originalArea.textContent = text;
   
-  // バックグラウンドスクリプトを介してMeCab解析のためのAPI呼び出し
-  chrome.runtime.sendMessage({ action: 'analyze', text: text }, response => {
-    if (response.error) {
-      console.error('Error:', response.error);
-      generatedArea.textContent = 'Error occurred during analysis';
-    } else {
-      generatedArea.textContent = response.result;
+  // MeCab解析のためのAPI呼び出し
+  fetch('http://localhost:5000/analyze', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: text }),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return response.json();
+  })
+  .then(data => {
+    generatedArea.textContent = data.result;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    generatedArea.textContent = 'Error occurred during analysis';
   });
 
   generateBtn.innerHTML = 'Generated';
@@ -69,11 +81,10 @@ generateBtn.addEventListener('click', () => {
   }, 1000);
 });
 
-// ウェブサイトのコンテンツをリサイズ
+
 function resizeWebContent() {
   document.body.style.width = 'calc(100% - 150px)';
 }
 
-// ページロード時とリサイズ時にコンテンツを調整
 window.addEventListener('load', resizeWebContent);
 window.addEventListener('resize', resizeWebContent);

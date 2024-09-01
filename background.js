@@ -9,6 +9,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       .then(response => response.json())
       .then(data => sendResponse(data))
       .catch(error => sendResponse({ error: error.message }));
-      return true;  // 非同期レスポンスのために必要
+      return true;  
     }
   });
