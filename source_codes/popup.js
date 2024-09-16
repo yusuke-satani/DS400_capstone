@@ -28,11 +28,15 @@ generateBtn.addEventListener('click', () => {
   originalArea.textContent = text;
   
   chrome.runtime.sendMessage({action: "analyze", text: text}, response => {
-    if (response.error) {
+    console.log("Received response:", response);  // デバッグ用ログ
+    if (response && response.error) {
       console.error('Error:', response.error);
-      generatedArea.textContent = 'Error occurred during analysis';
-    } else {
+      generatedArea.textContent = 'Error occurred during analysis: ' + response.error;
+    } else if (response && response.result) {
       generatedArea.textContent = response.result;
+    } else {
+      console.error('Unexpected response:', response);
+      generatedArea.textContent = 'Unexpected error occurred';
     }
   });
 
