@@ -1,3 +1,5 @@
+let wordList = [];
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received request:", request);
   if (request.action === "analyze") {
@@ -33,5 +35,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({error: error.toString()});
     });
     return true;  // Will respond asynchronously
+  } else if (request.action === "filterWords") {
+    fetch('http://127.0.0.1:5000/filter_words', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ words: request.words }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      sendResponse({filteredWords: data.filtered_words});
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      sendResponse({error: error.toString()});
+    });
+    return true;
+  } else if (request.action === "addWord") {
+    if (!wordList.includes(request.word)) {
+      wordList.push(request.word);
+      sendResponse({success: true, wordList: wordList});
+    } else {
+      sendResponse({success: false, message: "Word already exists"});
+    }
+    return true;
+  } else if (request.action === "getWordList") {
+    sendResponse({wordList: wordList});
+    return true;
   }
 });

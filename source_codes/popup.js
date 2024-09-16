@@ -1,42 +1,25 @@
-// コピー機能の実装
-const copyBtnTwitterTemp = document.querySelector('#copyBtnTwitterTemp');
-copyBtnTwitterTemp.addEventListener('click', copyOriginalHashTag);
-
-function copyOriginalHashTag() {
-  const copyRangePre = document.querySelector('#copyRangeHashTag > pre');
-  navigator.clipboard.writeText(copyRangePre.textContent.trim());
-  copyBtnTwitterTemp.innerHTML = 'Copied';
-  setTimeout(() => {
-    copyBtnTwitterTemp.innerHTML = 'Copy';
-  }, 1000);
-}
-
-// ペースト機能の実装
 const pasteArea = document.querySelector('#pasteArea');
-pasteArea.addEventListener('paste', (event) => {
-  event.preventDefault();
-  const text = event.clipboardData.getData('text/plain');
-  pasteArea.value = text;
-});
-
 const generateBtn = document.querySelector('#generateBtn');
-const originalArea = document.querySelector('#originalArea pre');
-const generatedArea = document.querySelector('#generatedArea pre');
+const translationArea = document.querySelector('#translationArea pre');
+const wordList = document.querySelector('#wordList');
+const flashcardContent = document.querySelector('#flashcardContent');
+
+let displayedWords = new Set();
 
 generateBtn.addEventListener('click', () => {
   const text = pasteArea.value;
-  originalArea.textContent = text;
   
   chrome.runtime.sendMessage({action: "analyze", text: text}, response => {
     console.log("Received response:", response);  // デバッグ用ログ
     if (response && response.error) {
       console.error('Error:', response.error);
-      generatedArea.textContent = 'Error occurred during analysis: ' + response.error;
+      translationArea.textContent = 'Error occurred during analysis: ' + response.error;
     } else if (response && response.result) {
-      generatedArea.textContent = response.result;
+      translationArea.textContent = response.result;
+      filterAndDisplayWords(response.result);
     } else {
       console.error('Unexpected response:', response);
-      generatedArea.textContent = 'Unexpected error occurred';
+      translationArea.textContent = 'Unexpected error occurred';
     }
   });
 
@@ -44,4 +27,50 @@ generateBtn.addEventListener('click', () => {
   setTimeout(() => {
     generateBtn.innerHTML = 'Generate';
   }, 1000);
+});
+
+function filterAndDisplayWords(text) {
+  const words = text.split(' ');
+  chrome.runtime.sendMessage({action: "filterWords", words: words}, response => {
+    if (response.error) {
+      console.error('Error:', response.error);
+    } else {
+      wordList.innerHTML = '';
+      response.filteredWords.forEach(word => {
+        if (!displayedWords.has(word)) {
+          const wordElement = document.createElement('div');
+          wordElement.textContent = word;
+          wordElement.classList.add('word');
+          wordElement.addEventListener('click', () => addToFlashcard(word));
+          wordList.appendChild(wordElement);
+          displayedWords.add(word);
+        }
+      });
+    }
+  });
+}
+
+function addToFlashcard(word) {
+  chrome.runtime.sendMessage({action: "addWord", word: word}, response => {
+    if (response.success) {
+      updateFlashcardDisplay(response.wordList);
+    } else {
+      console.log(response.message);
+    }
+  });
+}
+
+function updateFlashcardDisplay(wordList) {
+  flashcardContent.innerHTML = '';
+  wordList.forEach(word => {
+    const wordElement = document.createElement('div');
+    wordElement.textContent = word;
+    wordElement.classList.add('flashcard-word');
+    flashcardContent.appendChild(wordElement);
+  });
+}
+
+// 初期表示時にバックグラウンドのwordListを取得して表示
+chrome.runtime.sendMessage({action: "getWordList"}, response => {
+  updateFlashcardDisplay(response.wordList);
 });
