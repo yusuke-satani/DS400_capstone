@@ -1,9 +1,7 @@
 import MeCab
 
-text = '彼はいつもパソコンを使っている。'
-mecab = MeCab.Tagger('-r /opt/homebrew/etc/mecabrc -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd -Owakati')
-result = mecab.parse(text).strip()
+text = '彼はひどく感動した。'
+mecab = MeCab.Tagger('-r /opt/homebrew/etc/mecabrc -d /opt/homebrew/lib/mecab/dic/mecab-ipadic-neologd')
 
-
-
+result = mecab.parse(text).strip().split()
 print(result)

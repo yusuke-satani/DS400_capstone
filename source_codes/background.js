@@ -2,6 +2,7 @@ let wordList = [];
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log("Received request:", request);
+  
   if (request.action === "analyze") {
     fetch('http://127.0.0.1:5000/analyze', {
       method: 'POST',
@@ -35,7 +36,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({error: error.toString()});
     });
     return true;  // Will respond asynchronously
-  } else if (request.action === "filterWords") {
+  } 
+  
+  else if (request.action === "filterWords") {
     fetch('http://127.0.0.1:5000/filter_words', {
       method: 'POST',
       headers: {
@@ -55,7 +58,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({error: error.toString()});
     });
     return true;
-  } else if (request.action === "addWord") {
+  } 
+  
+  else if (request.action === "addWord") {
     if (!wordList.includes(request.word)) {
       wordList.push(request.word);
       sendResponse({success: true, wordList: wordList});
@@ -63,8 +68,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse({success: false, message: "Word already exists"});
     }
     return true;
-  } else if (request.action === "getWordList") {
+  } 
+  
+  else if (request.action === "getWordList") {
     sendResponse({wordList: wordList});
+    return true;
+  }
+  
+  else if (request.action === "getDefinition") {
+    fetch('http://127.0.0.1:5000/get_definition', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ word: request.word }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      sendResponse({ definition: data.definition });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      sendResponse({ error: 'Failed to get definition' });
+    });
+    return true;  // Will respond asynchronously
+  }
+  
+  else if (request.action === "removeWord") {
+    const index = wordList.indexOf(request.word);
+    if (index > -1) {
+      wordList.splice(index, 1);
+      sendResponse({success: true, wordList: wordList});
+    } else {
+      sendResponse({success: false, message: "Word not found"});
+    }
     return true;
   }
 });
