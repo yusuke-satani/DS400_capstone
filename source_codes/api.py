@@ -2,6 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import MeCab
 import logging
+import genanki
+import random
+import io
+from flask import send_file
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -83,6 +87,60 @@ def search_word_in_dictionary(word):
         return meanings[:3] if meanings else ["No definition found"]
     else:
         return ["Word not found or API error"]
+    
+@app.route('/generate_anki', methods=['POST'])
+def generate_anki():
+    try:
+        data = request.get_json()
+        if not data or 'flashcards' not in data:
+            return jsonify({'error': 'No flashcards provided'}), 400
+        
+        flashcards = data['flashcards']
+        
+        # Create deck
+        deck_id = random.randrange(1 << 30, 1 << 31)
+        deck = genanki.Deck(deck_id, 'English Flashcards')
+        
+        # Create model
+        model_id = random.randrange(1 << 30, 1 << 31)
+        model = genanki.Model(
+            model_id,
+            'Simple Model',
+            fields=[
+                {'name': 'Question'},
+                {'name': 'Answer'},
+            ],
+            templates=[
+                {
+                    'name': 'Card 1',
+                    'qfmt': '{{Question}}',
+                    'afmt': '{{FrontSide}}<hr id="answer">{{Answer}}',
+                },
+            ])
+        
+        # Add notes to deck
+        for card in flashcards:
+            note = genanki.Note(
+                model=model,
+                fields=[card['word'], card['definition']]
+            )
+            deck.add_note(note)
+        
+        # Generate package
+        package = genanki.Package(deck)
+        file_obj = io.BytesIO()
+        package.write_to_file(file_obj)
+        file_obj.seek(0)
+        
+        return send_file(
+            file_obj,
+            as_attachment=True,
+            download_name='output.apkg',
+            mimetype='application/octet-stream'
+        )
+    except Exception as e:
+        app.logger.error(f'Error generating Anki deck: {str(e)}', exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/')
 def home():

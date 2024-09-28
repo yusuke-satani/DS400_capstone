@@ -10,13 +10,14 @@ generateBtn.addEventListener('click', () => {
   const text = pasteArea.value;
   
   chrome.runtime.sendMessage({action: "analyze", text: text}, response => {
-    console.log("Received response:", response);  // デバッグ用ログ
+    console.log("Full response:", response);  // 追加
     if (response && response.error) {
       console.error('Error:', response.error);
       translationArea.textContent = 'Error occurred during analysis: ' + response.error;
     } else if (response && response.result) {
-      translationArea.textContent = response.result.join('');  // 空白なしで結合
-      filterAndDisplayWords(response.result);  // 直接 result を渡す
+      console.log("Result:", response.result);  // 追加
+      translationArea.textContent = response.result.join('');
+      filterAndDisplayWords(response.result);
     } else {
       console.error('Unexpected response:', response);
       translationArea.textContent = 'Unexpected error occurred';
@@ -139,3 +140,60 @@ function filterAndDisplayWords(words) {
 chrome.runtime.sendMessage({action: "getWordList"}, response => {
   updateFlashcardDisplay(response.wordList);
 });
+
+// Function to create and return a deck
+function createDeck() {
+  const secRandom = Math.floor(Math.random() * (1 << 31 - 1 << 30) + 1 << 30);
+  return new genanki.Deck(secRandom, 'English');
+}
+
+// Function to add a card to the deck
+function addCardToDeck(deck, word, definition) {
+  const firRandom = Math.floor(Math.random() * (1 << 31 - 1 << 30) + 1 << 30);
+  const model = new genanki.Model({
+    id: firRandom,
+    name: 'English',
+    fields: [
+      { name: 'Question' },
+      { name: 'Answer' },
+    ],
+    templates: [
+      {
+        name: 'Card 1',
+        qfmt: '{{Question}}',
+        afmt: '{{FrontSide}}<hr id="answer">{{Answer}}',
+      },
+    ],
+  });
+
+  const note = new genanki.Note({
+    model: model,
+    fields: [word, definition],
+  });
+
+  deck.addNote(note);
+}
+
+// Function to generate the Anki deck
+function generateAnkiDeck() {
+  const flashcardItems = document.querySelectorAll('.flashcard-item');
+  const flashcards = Array.from(flashcardItems).map(item => ({
+    word: item.querySelector('.flashcard-word').textContent,
+    definition: item.querySelector('.flashcard-definition').textContent
+  }));
+
+  chrome.runtime.sendMessage({action: "generateAnki", flashcards: flashcards}, response => {
+    if (chrome.runtime.lastError) {
+      console.error('Error:', chrome.runtime.lastError);
+    } else if (response.error) {
+      console.error('Error:', response.error);
+    } else if (response.success) {
+      console.log('Anki deck generated and download started');
+    }
+  });
+}
+
+
+
+// Add event listener for the Generate Anki button
+document.querySelector('#generateAnkiBtn').addEventListener('click', generateAnkiDeck);

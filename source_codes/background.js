@@ -11,16 +11,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       },
       body: JSON.stringify({ text: request.text }),
     })
-    .then(response => {
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-      return response.text().then(text => {
-        console.log("Raw response:", text);
-        return text ? JSON.parse(text) : {};
-      });
-    })
+    .then(response => response.json())
     .then(data => {
-      console.log("Parsed data:", data);
       if (data.error) {
         throw new Error(data.error);
       }
@@ -28,15 +20,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
     .catch(error => {
       console.error("Fetch error:", error);
-      if (error instanceof TypeError) {
-        console.error("Network error:", error.message);
-      } else if (error instanceof SyntaxError) {
-        console.error("JSON parsing error:", error.message);
-      }
       sendResponse({error: error.toString()});
     });
     return true;  // Will respond asynchronously
-  } 
+  }
   
   else if (request.action === "filterWords") {
     fetch('http://127.0.0.1:5000/filter_words', {
@@ -107,4 +94,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     return true;
   }
-});
+
+  else if (request.action === "generateAnki") {
+    fetch('http://127.0.0.1:5000/generate_anki', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ flashcards: request.flashcards }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.arrayBuffer();
+    })
+    .then(arrayBuffer => {
+      chrome.downloads.download({
+        url: 'data:application/octet-stream;base64,' + btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))),
+        filename: 'output.apkg',
+        saveAs: true
+      }, (downloadId) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({error: chrome.runtime.lastError.message});
+        } else {
+          sendResponse({success: true, downloadId: downloadId});
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      sendResponse({error: error.toString()});
+    });
+    return true; // Indicates that the response is sent asynchronously
+  }
+  }
+);
