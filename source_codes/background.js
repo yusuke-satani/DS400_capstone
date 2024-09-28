@@ -95,6 +95,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  
   else if (request.action === "generateAnki") {
     fetch('http://127.0.0.1:5000/generate_anki', {
       method: 'POST',
@@ -110,10 +111,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return response.arrayBuffer();
     })
     .then(arrayBuffer => {
+      const base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
+      const dataUrl = `data:application/octet-stream;base64,${base64}`;
       chrome.downloads.download({
-        url: 'data:application/octet-stream;base64,' + btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))),
+        url: dataUrl,
         filename: 'output.apkg',
-        saveAs: true
+        saveAs: false // This will save the file directly to the default Downloads folder
       }, (downloadId) => {
         if (chrome.runtime.lastError) {
           sendResponse({error: chrome.runtime.lastError.message});
@@ -128,5 +131,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true; // Indicates that the response is sent asynchronously
   }
-  }
+}
 );
