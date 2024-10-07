@@ -6,7 +6,7 @@ const flashcardContent = document.querySelector('#flashcardContent');
 
 let displayedWords = new Set();
 let wordList = [];
-let selectedLevel = 2;  // デフォルトレベル
+let selectedLevel = 0;  // デフォルトレベル
 
 document.addEventListener('DOMContentLoaded', () => {
     loadWordList();

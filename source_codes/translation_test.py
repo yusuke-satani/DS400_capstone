@@ -16,8 +16,6 @@ exported_model.load_state_dict(torch.load(f"{model_save_path}/model_state.pt", m
 exported_model = exported_model.to(device)
 exported_model.eval()
 
-print("\nAfter export and reload:")
-
 model_name = "staka/fugumt-en-ja"
 tokenizer = MarianTokenizer.from_pretrained(model_name)
 

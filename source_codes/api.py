@@ -187,7 +187,7 @@ def translate():
         
         text = data['text']
         level = data['level']
-        level = {0: 2, 2: 0, 1: 1}[level]
+        level = 2-level
         
         # Here, you would call your translation model function
         translated_text = generate_translation(text, level, exported_model, exported_tokenizer, device)
