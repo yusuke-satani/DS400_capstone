@@ -94,7 +94,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     return true;
   }
-
   
   else if (request.action === "generateAnki") {
     fetch('http://127.0.0.1:5000/generate_anki', {
@@ -131,5 +130,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true; // Indicates that the response is sent asynchronously
   }
-}
-);
+  
+  else if (request.action === "translate") {
+    fetch('http://127.0.0.1:5000/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: request.text, level: request.level }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      sendResponse({translatedText: data.translated_text});
+    })
+    .catch(error => {
+      console.error("Fetch error:", error);
+      sendResponse({error: error.toString()});
+    });
+    return true;  // Will respond asynchronously
+  }
+  
+  return false;  // Will not respond
+});

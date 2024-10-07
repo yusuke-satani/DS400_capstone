@@ -9,7 +9,6 @@ let wordList = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   loadWordList();
-  // 他の初期化コード...
 });
 
 function loadWordList() {
@@ -20,6 +19,39 @@ function loadWordList() {
     }
   });
 }
+
+let selectedLevel = 0;  // Default level
+
+// Add event listeners for level buttons
+document.querySelectorAll('.levelBtn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    selectedLevel = parseInt(e.target.dataset.level);
+    document.querySelectorAll('.levelBtn').forEach(btn => btn.classList.remove('selected'));
+    e.target.classList.add('selected');
+  });
+});
+
+generateBtn.addEventListener('click', () => {
+  const text = pasteArea.value;
+  
+  chrome.runtime.sendMessage({action: "translate", text: text, level: selectedLevel}, response => {
+    if (response && response.error) {
+      console.error('Error:', response.error);
+      translationArea.textContent = 'Error occurred during translation: ' + response.error;
+    } else if (response && response.translatedText) {
+      translationArea.textContent = response.translatedText;
+      filterAndDisplayWords(response.translatedText.split(' '));  // Split the translated text for word analysis
+    } else {
+      console.error('Unexpected response:', response);
+      translationArea.textContent = 'Unexpected error occurred';
+    }
+  });
+
+  generateBtn.innerHTML = 'Generated';
+  setTimeout(() => {
+    generateBtn.innerHTML = 'Generate';
+  }, 1000);
+});
 
 function saveWordList() {
   chrome.storage.sync.set({ wordList: wordList });

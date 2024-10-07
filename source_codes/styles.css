@@ -76,3 +76,19 @@ body {
   background-color: #ffe6e6;
   border-radius: 3px;
 }
+#levelSelection {
+  margin-bottom: 10px;
+}
+
+.levelBtn {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.levelBtn.selected {
+  background-color: #007bff;
+  color: white;
+}
