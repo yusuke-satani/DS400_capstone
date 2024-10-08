@@ -5,7 +5,12 @@
   <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-  <textarea id="pasteArea" placeholder="ここにテキストを入力してください"></textarea>
+  <div id="levelSelection">
+    <button class="levelBtn" data-level="0">Elementary</button>
+    <button class="levelBtn" data-level="1">Middle</button>
+    <button class="levelBtn" data-level="2">High</button>
+  </div>
+  <textarea id="pasteArea" placeholder="Put text here"></textarea>
   <button id="generateBtn">Generate</button>
   <div id="translationArea" class="resultArea">
     <h4>Translation</h4>
@@ -20,12 +25,6 @@
     <div id="flashcardContent"></div>
     <button id="generateAnkiBtn">Generate Anki Deck</button>
   </div>
-  <div id="levelSelection">
-    <button class="levelBtn" data-level="0">Level 0</button>
-    <button class="levelBtn" data-level="1">Level 1</button>
-    <button class="levelBtn" data-level="2">Level 2</button>
-  </div>
-  <button id="generateBtn">Generate</button>
   <script src="popup.js"></script>
 </body>
 </html>

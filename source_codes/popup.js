@@ -67,15 +67,15 @@ function filterAndDisplayWords(words) {
             console.error('Error:', response.error);
         } else {
             wordListElement.innerHTML = '';
-            Object.entries(response.filteredWords).forEach(([originalForm, features]) => {
-                if (!displayedWords.has(originalForm)) {
+            response.filteredWords.forEach(item => {
+                if (!displayedWords.has(item.word)) {
                     const wordElement = document.createElement('div');
-                    const displayWord = features[6] || originalForm;
+                    const displayWord = item.features[6] || item.word;
                     wordElement.textContent = displayWord;
                     wordElement.classList.add('word');
-                    wordElement.addEventListener('click', () => addToFlashcard(displayWord, originalForm));
+                    wordElement.addEventListener('click', () => addToFlashcard(displayWord, item.word));
                     wordListElement.appendChild(wordElement);
-                    displayedWords.add(originalForm);
+                    displayedWords.add(item.word);
                 }
             });
         }
