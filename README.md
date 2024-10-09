@@ -22,7 +22,7 @@ MeCab: an open-source text segmentation library for Japanese written text.
 ![gif_rydeen](https://github.com/user-attachments/assets/1946e901-d866-4e5c-ac14-fda10decb5e9)
 
 
-
+gitのfragileの解説
 
 ## Tentative Schedule
 ### 9/2 - 9/22: Frontend Design Completion
