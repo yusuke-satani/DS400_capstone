@@ -14,8 +14,10 @@ These words are automatically stored in the Anki flashcard app, eliminating the 
 
 ### Software
 MeCab: an open-source text segmentation library for Japanese written text.
+![gif_rydeen_fast](https://github.com/user-attachments/assets/00e5a016-e39d-46b7-b310-5a3470979b4c)
 
-https://i.imgur.com/0CQKcPZ.gif
+
+
 
 ## Tentative Schedule
 ### 9/2 - 9/22: Frontend Design Completion
