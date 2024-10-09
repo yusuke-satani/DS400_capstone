@@ -1,4 +1,8 @@
 # RydeeNLP
+
+## Abstract
+add abstract
+
 ## About
 RydeeNLP is the capstone project for DS400, designed to assist Japanese language learners. This Chrome extension provides two main features:
   1. Translation
