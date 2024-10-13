@@ -1,12 +1,12 @@
 # RydeeNLP
 
 ## Abstract
-add abstract
+Natural Language Processing (NLP) has significantly advanced language learning technologies, yet adaptive, personalized tools for less commonly taught languages like Japanese remain underdeveloped. Existing Japanese learning tools often lack dynamic adjustment to individual learners' evolving proficiency, making the learning process daunting. Addressing this gap, we present RydeeNLP, a novel Japanese language learning system that integrates advanced NLP techniques with educational technology to provide personalized learning experiences. Our contributions in this paper are three-fold. First, we employ fine-tuned language models to create a multi-tiered difficulty classification system for Japanese vocabulary, covering nouns, verbs, and adjectives. Second, we develop custom difficulty and paraphrase dictionaries to inform adaptive translation models that dynamically adjust translations based on learner proficiency. Third, we implement this technology in a web browser extension that provides real-time, proficiency-matched translations and automatically populates a spaced repetition flashcard system for ongoing learning. Evaluation results demonstrate the effectiveness of our classifiers and translation models, with the fine-tuned model producing more grammatically accurate translations and word-swapping model translating with overall higher BLEU scores. 
 
-## About
-RydeeNLP is the capstone project for DS400, designed to assist Japanese language learners. This Chrome extension provides two main features:
-  1. Translation
-  2. Automated Flashcard Creation
+## What is RydeeNLP?
+RydeeNLP is an application that is intendended to help Japanese learning with efficient way. RyddeeNLP is composed of two main section
+
+
 
 ## 1. Translation
 The translation feature generates multiple Japanese translations based on the user's selected proficiency level (Elementary, Middle, or High school). 
@@ -16,28 +16,14 @@ Users can set their preferred level, allowing them to read Japanese texts that m
 Users can click on words in the generated translations that they are unfamiliar with or wish to remember. 
 These words are automatically stored in the Anki flashcard app, eliminating the need for manual flashcard creation and helping users study Japanese more efficiently.
 
-### Software
-MeCab: an open-source text segmentation library for Japanese written text.
+
 
 ![gif_rydeen](https://github.com/user-attachments/assets/1946e901-d866-4e5c-ac14-fda10decb5e9)
 
 
-gitのfragileの解説
 
-## Tentative Schedule
-### 9/2 - 9/22: Frontend Design Completion
-
-Finalize the front-end design of the Chrome extension.
-Integrate the backend API with the front end, ensuring proper alignment for API requests, including those to the MeCab API.
-### 9/23 - 10/6: Anki Integration
-
-Implement functionality to ensure that words clicked within the Chrome extension are accurately sent to the Anki app.
-start working on a paper for the ACM Student Research Competition.
-### 10/7 - 10/27: Backend Translation Model
-
-Develop and integrate the translation model within the backend of the Chrome extension, ensuring it functions correctly.
-### 10/28 - 11/17: Full Extension Testing
-
-Conduct comprehensive testing of the Chrome extension to ensure all features and integrations are working as intended.
-
+### Software
+MeCab: An open-source text segmentation library for Japanese written text. It provides fast and accurate morphological analysis of Japanese sentences.
+Jisho API: online Japanese-English dictionary Jisho.org. It allows developers to retrieve word definitions, readings, and example sentences programmatically.
+Anki API:An API for the spaced repetition flashcard program Anki. It enables programmatic creation and management of flashcards and decks, facilitating integration with language learning applications.
 
