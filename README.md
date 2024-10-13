@@ -23,7 +23,7 @@ These words are automatically stored in the Anki flashcard app, eliminating the 
 
 
 ### Software
-MeCab: An open-source text segmentation library for Japanese written text. It provides fast and accurate morphological analysis of Japanese sentences.
-Jisho API: online Japanese-English dictionary Jisho.org. It allows developers to retrieve word definitions, readings, and example sentences programmatically.
-Anki API:An API for the spaced repetition flashcard program Anki. It enables programmatic creation and management of flashcards and decks, facilitating integration with language learning applications.
+1. MeCab: An open-source text segmentation library for Japanese written text. It provides fast and accurate morphological analysis of Japanese sentences.
+2. Jisho API: online Japanese-English dictionary Jisho.org. It allows developers to retrieve word definitions, readings, and example sentences programmatically.
+3. Anki API:An API for the spaced repetition flashcard program Anki. It enables programmatic creation and management of flashcards and decks, facilitating integration with language learning applications.
 
